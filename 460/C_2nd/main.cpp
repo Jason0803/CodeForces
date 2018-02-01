@@ -1,57 +1,41 @@
 #include <iostream>
-#define MAX 2001
+#define MAX 2005
 using namespace std;
-int n, m, k;
-int result = 0;
-char room[MAX+1][MAX+1];
-bool check[MAX+1][MAX+1];
-int dr[] = {1,0};
-int dc[] = {0,1};
-void dfs(int r, int c, int cnt) {
-    for(int i=0; i<2; i++) {
-        int nr = r + dr[i];
-        int nc = c + dc[i];
-        if(0 <= nr && nr < n && 0 <= nc && nc < m) {
-            if(check[nr][nc] == false && room[nr][nc] == '.'){
-                check[nr][nc] = true;
-                if(cnt+1 == k) {
-                    result+=1;
-                    check[nr][nc] = false;
-                    return;
-                }
-                dfs(nr, nc, cnt+1);
-                check[nr][nc] = false;
-            }
-        }
-    }
-}
+
+int a[MAX][MAX], b[MAX][MAX], n, m, k, result, count_dots;
+char map[MAX][MAX];
 
 int main() {
     ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    cout.tie(NULL);
+    cin.tie(); cout.tie();
+    
     cin >> n >> m >> k;
-    int count_dots = 0;
-    for(int i=0; i<n; i++) {
-        for(int j=0; j<m; j++) {
-            cin >> room[i][j];
-            if(room[i][j] == '.') count_dots++;
+    for(int i=1; i<=n; i++) {
+        for(int j=1; j<=m; j++) {
+            cin >> map[i][j];
+            if(map[i][j] == '.')
+                count_dots++;
         }
     }
-    if(k == 1) printf("%d\n", count_dots);
-    else {
-        for(int i=0; i<=n; i++) {
-            for(int j=0; j<=m; j++) {
-                if(room[i][j] == '.') {
-                    check[i][j] = true;
-                    dfs(i,j,1);
-                    //check[i][j] = false;
-                }
+    if(k != 1) {
+        for(int i=1; i<=n; i++) {
+            for(int j=1; j<=m; j++) {
+                if(map[i][j] == '*') a[i][j] = 0;
+                else a[i][j] = a[i][j-1] + 1;
+                if(a[i][j] >= k) result++;
             }
         }
-        printf("%d\n", result);
         
-    }
+        for(int j=1; j<=m; j++) {
+            for(int i=1; i<=n; i++) {
+                if(map[i][j] == '*') b[i][j] = 0;
+                else b[i][j] = b[i-1][j] + 1;
+                if(b[i][j] >= k) result++;
+            }
+        }
+        
+        cout << result << '\n';
+    } else cout << count_dots << '\n';
+    
     return 0;
 }
-
